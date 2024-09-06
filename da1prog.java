@@ -16,25 +16,23 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class da1prog {
 
-   // Mapper class
    public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
        private final static IntWritable one = new IntWritable(1);
        private Text country = new Text();
 
        public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-           // Skip the header line
+
            if (key.get() == 0 && value.toString().contains("date")) {
                return;
            }
 
-           // Split CSV line into fields
            String[] fields = value.toString().split(",");
            if (fields.length >= 3) {
-               // Extract home and away teams
+               
                String homeTeam = fields[1];
                String awayTeam = fields[2];
 
-               // Emit home team and away team as key with count 1
+               
                country.set(homeTeam);
                context.write(country, one);
 
@@ -44,7 +42,7 @@ public class da1prog {
        }
    }
 
-   // Reducer class
+   
    public static class Reduce extends Reducer<Text, IntWritable, Text, IntWritable> {
        public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
            int sum = 0;
@@ -55,7 +53,7 @@ public class da1prog {
        }
    }
 
-   // Main method to set up job configuration
+   
    public static void main(String[] args) throws Exception {
        Configuration conf = new Configuration();
        Job job = Job.getInstance(conf, "matchcount");
